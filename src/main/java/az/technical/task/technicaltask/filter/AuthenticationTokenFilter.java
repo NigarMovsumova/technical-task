@@ -27,7 +27,6 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         try {
             String authToken = request.getHeader(X_AUTH_TOKEN);
             if (authToken != null) {
-                //Boolean validToken = authenticationClient.validateToken(authToken);
                 UserInfo userInfo = authenticationClient.validateToken(authToken);
                 System.out.println(userInfo.getCustomerId() + " " + userInfo.getEmail());
                 if (userInfo == null) {
@@ -39,7 +38,8 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                                     .customerId(userInfo.getCustomerId())
                                     .email(userInfo.getEmail())
                                     .build(),
-                            true);
+                            true,
+                            userInfo.getRole());
                     SecurityContextHolder.getContext().setAuthentication(userAuthentication);
                     System.out.println("User info is valid");
                 }
@@ -53,5 +53,4 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     public void setAuthenticationClient(MsAuthenticationClient authenticationClient) {
         this.authenticationClient = authenticationClient;
     }
-
 }

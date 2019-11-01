@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,9 +28,14 @@ public class AccountController {
     @GetMapping("/by-customer")
     public List<AccountDto> getAccounts(@RequestHeader("X-Auth-Token") String token,
                                         UserAuthentication userAuthentication) {
-        System.out.println(token);
-        System.out.println("here"+userAuthentication.getPrincipal()+"here");
         return service.getAccounts(userAuthentication.getPrincipal());
+    }
+
+    @GetMapping("/{id}")
+    public AccountDto getAccount(@RequestHeader("X-Auth-Token") String token,
+                                 UserAuthentication userAuthentication,
+                                 @PathVariable(name = "id") String accountId){
+        return service.getAccount(userAuthentication.getPrincipal(), accountId);
     }
 
     @PostMapping("/filter")
@@ -46,7 +52,6 @@ public class AccountController {
     public void createAccount(
             @RequestHeader("X-Auth-Token") String token,
             UserAuthentication userAuthentication) {
-        System.out.println("entered");
         service.createAccount(userAuthentication.getPrincipal());
     }
 
@@ -61,8 +66,8 @@ public class AccountController {
     @DeleteMapping
     public void deleteAccount(@RequestHeader("X-Auth-Token") String token,
                               AccountRequest accountRequest,
-                              String accountId) {
-        service.deleteAccount(accountRequest, accountId);
+                              String customerId) {
+        service.deleteAccount(accountRequest, customerId);
     }
 }
 

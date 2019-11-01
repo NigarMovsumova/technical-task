@@ -15,55 +15,78 @@ import java.util.List;
 
 @Service
 public class AccountService {
+
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
-    public AccountService(AccountRepository accountRepository,
+    public AccountService( AccountRepository accountRepository,
                           AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
     }
 
+    public String generateAccountId(){
+        String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz";
+        StringBuilder sb = new StringBuilder(16);
+
+        for (int i = 0; i < 16 ; i++) {
+            int index = (int)(alphaNumericString.length() * Math.random());
+            sb.append(alphaNumericString.charAt(index));
+        }
+
+        if(accountRepository.getAllAccountIds().contains(sb.toString())){
+            generateAccountId();
+        }
+
+        return sb.toString();
+    }
+
     public List<AccountDto> getAccounts(String customerId) {
-        System.out.println(customerId);
         return accountMapper.mapEntityListToDtoList(
                 accountRepository.findAllByCustomerId(customerId));
     }
 
 
     public List<AccountDto> getAccounts(AccountRequest request, String customerId) {
-
         List<AccountEntity> accountEntities = accountRepository.findAll(
                 new AccountSpecification(request.getFilter(), customerId));
         return accountMapper.mapEntityListToDtoList(accountEntities);
     }
 
-    public void createAccount( String customerId) {
-        System.out.println("entered");
+    public void createAccount(String customerId) {
         AccountEntity accountEntity = AccountEntity
                 .builder()
                 //TODO generate id somehow
-                .accountId("1000")
+                .accountId(generateAccountId())
                 .currency("AZN")
                 .status("DEACTIVE")
                 .amount(new BigDecimal(300))
                 .customerId(customerId)
                 .build();
-        System.out.println("build");
         accountRepository.save(accountEntity);
     }
 
     public void activateAccount(UserAuthentication userAuthentication, String accountId) {
+        if (!userAuthentication.getRole().equals("ROLE_ADMIN")) {
+            throw new RuntimeException("Regular users can not activate accounts");
+        }
         List<AccountDto> accountDtoList = getAccounts(userAuthentication.getPrincipal());
-        if (!accountDtoList.contains(accountId)) {
-            throw new NoSuchAccountException("Customer does not have such account");
-        } else {
-            AccountEntity accountEntity = accountRepository
-                    .findByAccountId(accountId)
-                    .orElseThrow(() -> new NoSuchAccountException("Account Not Found"));
-            if (accountEntity.getStatus() != "ACTIVE") {
-                accountEntity.setStatus("ACTIVE");
+        boolean isAccountFound = false;
+        for (AccountDto accountDto : accountDtoList) {
+            if (accountDto.getAccountId().equals(accountId)) {
+                isAccountFound = true;
+                AccountEntity accountEntity = accountRepository
+                        .findByAccountId(accountId)
+                        .orElseThrow(() -> new NoSuchAccountException("Account Not Found"));
+                if (!accountEntity.getStatus().equals("ACTIVE")) {
+                    accountEntity.setStatus("ACTIVE");
+                    accountRepository.save(accountEntity);
+                }
+                break;
             }
+        }
+        if (!isAccountFound) {
+            throw new NoSuchAccountException("Customer does not have such account");
         }
     }
 
@@ -73,5 +96,13 @@ public class AccountService {
                         accountRequest.getFilter(),
                         customerId)).orElseThrow(() -> new NoSuchAccountException("Account is not found"));
         accountRepository.delete(accountEntity);
+    }
+
+    public AccountDto getAccount(String customerId, String accountId) {
+        AccountEntity accountEntity= accountRepository
+                .findByCustomerIdAndAccountId(customerId, accountId)
+                .orElseThrow(()-> new NoSuchAccountException("User does not have such an account"));
+        System.out.println(accountEntity.toString());
+        return accountMapper.mapEntityToDto(accountEntity);
     }
 }

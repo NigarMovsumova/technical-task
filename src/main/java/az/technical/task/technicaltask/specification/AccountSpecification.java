@@ -33,7 +33,7 @@ public class AccountSpecification implements Specification<AccountEntity> {
                                 customerId)
         );
 
-        if (filter.getCurrency() != "") {
+        if (filter.getCurrency() != null && !filter.getCurrency().equals("")) {
             predicates.add(
                     criteriaBuilder.equal
                             (root.get(Field.CURRENCY),
@@ -41,12 +41,14 @@ public class AccountSpecification implements Specification<AccountEntity> {
             );
         }
 
-        if (filter.getAccountId() != "") {
+        if (filter.getAccountId() != null && !filter.getAccountId().equals("")) {
             predicates.add(criteriaBuilder.equal(root.get(Field.ACCOUNT_ID), filter.getAccountId()));
         }
 
-        predicates.add(criteriaBuilder.between(root.get(Field.AMOUNT),
-                filter.getMinAmount(), filter.getMaxAmount()));
+        if (filter.getMinAmount() != null && filter.getMaxAmount() != null) {
+            predicates.add(criteriaBuilder.between(root.get(Field.AMOUNT),
+                    filter.getMinAmount(), filter.getMaxAmount()));
+        }
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
 
