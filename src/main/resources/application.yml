@@ -1,0 +1,20 @@
+server:
+  port: 8484
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/accounts
+    username: postgres
+    password: admin
+  jpa:
+    database: postgresql
+    properties:
+      hibernate.temp.use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: update
+swagger:
+  enabled: true
+
+
