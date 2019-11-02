@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .requestMatchers()
-                .antMatchers("/accounts/**", "/mail/**")
+                .antMatchers("/accounts/**", "/transfers/**")
                 .and()
                 .addFilterBefore(authenticationTokenFilter, FilterSecurityInterceptor.class);
     }

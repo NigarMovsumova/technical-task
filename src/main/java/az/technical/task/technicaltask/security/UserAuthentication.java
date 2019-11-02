@@ -58,4 +58,14 @@ public class UserAuthentication implements Authentication {
     public String getName() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "UserAuthentication{" +
+                "customerId='" + customerId + '\'' +
+                ", userInfo=" + userInfo.toString() +
+                ", authenticated=" + authenticated +
+                ", role='" + role + '\'' +
+                '}';
+    }
 }

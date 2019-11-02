@@ -48,22 +48,24 @@ public class AccountService {
 
 
     public List<AccountDto> getAccounts(AccountRequest request, String customerId) {
+        System.out.println("entered");
         List<AccountEntity> accountEntities = accountRepository.findAll(
                 new AccountSpecification(request.getFilter(), customerId));
+        System.out.println(customerId);
         return accountMapper.mapEntityListToDtoList(accountEntities);
     }
 
     public void createAccount(String customerId) {
         AccountEntity accountEntity = AccountEntity
                 .builder()
-                //TODO generate id somehow
                 .accountId(generateAccountId())
                 .currency("AZN")
                 .status("DEACTIVE")
                 .amount(new BigDecimal(300))
                 .customerId(customerId)
                 .build();
-        accountRepository.save(accountEntity);
+
+         accountRepository.save(accountEntity);
     }
 
     public void activateAccount(UserAuthentication userAuthentication, String accountId) {
@@ -99,10 +101,9 @@ public class AccountService {
     }
 
     public AccountDto getAccount(String customerId, String accountId) {
-        AccountEntity accountEntity= accountRepository
+        AccountEntity accountEntity = accountRepository
                 .findByCustomerIdAndAccountId(customerId, accountId)
                 .orElseThrow(()-> new NoSuchAccountException("User does not have such an account"));
-        System.out.println(accountEntity.toString());
         return accountMapper.mapEntityToDto(accountEntity);
     }
 }

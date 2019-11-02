@@ -3,6 +3,8 @@ package az.technical.task.technicaltask.model.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -18,8 +20,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "operations")
-public class OperationEntity {
+@Table(name = "transfers")
+public class TransferEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +34,14 @@ public class OperationEntity {
     private String accountId;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime updatedAt;
 
     @Column(name = "increased")
     private Boolean increased;

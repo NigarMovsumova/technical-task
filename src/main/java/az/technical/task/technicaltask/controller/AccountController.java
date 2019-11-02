@@ -28,6 +28,9 @@ public class AccountController {
     @GetMapping("/by-customer")
     public List<AccountDto> getAccounts(@RequestHeader("X-Auth-Token") String token,
                                         UserAuthentication userAuthentication) {
+        System.out.println("entered");
+        System.out.println(userAuthentication.toString());
+        System.out.println(userAuthentication.getPrincipal());
         return service.getAccounts(userAuthentication.getPrincipal());
     }
 
@@ -43,8 +46,6 @@ public class AccountController {
             @RequestHeader("X-Auth-Token") String token,
             @RequestBody AccountRequest accountRequest,
             UserAuthentication userAuthentication) {
-        System.out.println(accountRequest.toString());
-        System.out.println(userAuthentication.toString());
         return service.getAccounts(accountRequest, userAuthentication.getPrincipal());
     }
 

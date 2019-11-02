@@ -36,6 +36,8 @@ public class AccountEntity {
     @Column(name = "account_id")
     private String accountId;
 
+    //TODO add created at, updated at fields
+
     @Column(name = "status")
     private String status;
 }
