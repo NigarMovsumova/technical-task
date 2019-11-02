@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TransferRepository extends JpaRepository<TransferEntity, Long> {
+public interface TransferRepository extends JpaRepository<TransferEntity, Integer> {
 
     List<TransferEntity> findAllByCustomerId(String customerId);
 }

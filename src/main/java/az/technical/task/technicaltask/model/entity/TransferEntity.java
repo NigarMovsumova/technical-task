@@ -1,6 +1,7 @@
 package az.technical.task.technicaltask.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "transfers")
+@Builder
 public class TransferEntity {
 
     @Id
@@ -32,6 +34,9 @@ public class TransferEntity {
 
     @Column(name = "account_id")
     private String accountId;
+
+    @Column(name = "topped_up_account_id")
+    private String toppedUpAccountId;
 
     @Column(name = "created_at")
     @CreationTimestamp

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -14,9 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TransferDto {
     private String customerId;
+    private String toppedUpAccountId;
     private String accountId;
-    private LocalDateTime date;
-    private Boolean increased;
     private BigDecimal amount;
     private String currency;
     private String category;

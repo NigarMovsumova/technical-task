@@ -19,22 +19,22 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
-    public AccountService( AccountRepository accountRepository,
+    public AccountService(AccountRepository accountRepository,
                           AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
     }
 
-    public String generateAccountId(){
+    public String generateAccountId() {
         String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz";
         StringBuilder sb = new StringBuilder(16);
 
-        for (int i = 0; i < 16 ; i++) {
-            int index = (int)(alphaNumericString.length() * Math.random());
+        for (int i = 0; i < 16; i++) {
+            int index = (int) (alphaNumericString.length() * Math.random());
             sb.append(alphaNumericString.charAt(index));
         }
 
-        if(accountRepository.getAllAccountIds().contains(sb.toString())){
+        if (accountRepository.getAllAccountIds().contains(sb.toString())) {
             generateAccountId();
         }
 
@@ -55,7 +55,7 @@ public class AccountService {
         return accountMapper.mapEntityListToDtoList(accountEntities);
     }
 
-    public void createAccount(String customerId) {
+    public AccountDto createAccount(String customerId) {
         AccountEntity accountEntity = AccountEntity
                 .builder()
                 .accountId(generateAccountId())
@@ -65,45 +65,34 @@ public class AccountService {
                 .customerId(customerId)
                 .build();
 
-         accountRepository.save(accountEntity);
+        accountRepository.save(accountEntity);
+        return accountMapper.mapEntityToDto(accountEntity);
     }
 
     public void activateAccount(UserAuthentication userAuthentication, String accountId) {
         if (!userAuthentication.getRole().equals("ROLE_ADMIN")) {
             throw new RuntimeException("Regular users can not activate accounts");
         }
-        List<AccountDto> accountDtoList = getAccounts(userAuthentication.getPrincipal());
-        boolean isAccountFound = false;
-        for (AccountDto accountDto : accountDtoList) {
-            if (accountDto.getAccountId().equals(accountId)) {
-                isAccountFound = true;
-                AccountEntity accountEntity = accountRepository
-                        .findByAccountId(accountId)
-                        .orElseThrow(() -> new NoSuchAccountException("Account Not Found"));
-                if (!accountEntity.getStatus().equals("ACTIVE")) {
-                    accountEntity.setStatus("ACTIVE");
-                    accountRepository.save(accountEntity);
-                }
-                break;
-            }
-        }
-        if (!isAccountFound) {
-            throw new NoSuchAccountException("Customer does not have such account");
+        AccountEntity accountEntity = accountRepository
+                .findByAccountId(accountId)
+                .orElseThrow(()-> new NoSuchAccountException("Account does not exist"));
+        if (!accountEntity.getStatus().equals("ACTIVE")){
+            accountEntity.setStatus("ACTIVE");
+            accountRepository.save(accountEntity);
         }
     }
 
-    public void deleteAccount(AccountRequest accountRequest, String customerId) {
-        AccountEntity accountEntity = accountRepository.findOne(
-                new AccountSpecification(
-                        accountRequest.getFilter(),
-                        customerId)).orElseThrow(() -> new NoSuchAccountException("Account is not found"));
+    public void deleteAccount(String customerId, String accountId) {
+        AccountEntity accountEntity= accountRepository
+                .findByCustomerIdAndAccountId(customerId, accountId)
+                .orElseThrow(() -> new NoSuchAccountException("User does not have such an account"));
         accountRepository.delete(accountEntity);
     }
 
     public AccountDto getAccount(String customerId, String accountId) {
         AccountEntity accountEntity = accountRepository
                 .findByCustomerIdAndAccountId(customerId, accountId)
-                .orElseThrow(()-> new NoSuchAccountException("User does not have such an account"));
+                .orElseThrow(() -> new NoSuchAccountException("User does not have such an account"));
         return accountMapper.mapEntityToDto(accountEntity);
     }
 }
