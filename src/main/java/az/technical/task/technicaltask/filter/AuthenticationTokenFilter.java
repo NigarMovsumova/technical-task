@@ -23,12 +23,10 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         try {
             String authToken = request.getHeader(X_AUTH_TOKEN);
             if (authToken != null) {
                 UserInfo userInfo = authenticationClient.validateToken(authToken);
-                System.out.println(userInfo.getCustomerId() + " " + userInfo.getEmail());
                 if (userInfo == null) {
                     throw new RuntimeException("User info is not valid");
                 } else {
@@ -41,7 +39,6 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                             true,
                             userInfo.getRole());
                     SecurityContextHolder.getContext().setAuthentication(userAuthentication);
-                    System.out.println("User info is valid");
                 }
             }
         } finally {

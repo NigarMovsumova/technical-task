@@ -51,7 +51,6 @@ public class AccountService {
 
 
     public List<AccountDto> getAccounts(AccountRequest request, String customerId) {
-        System.out.println("entered");
         List<AccountEntity> accountEntities = accountRepository.findAll(
                 new AccountSpecification(request.getFilter(), customerId));
         System.out.println(customerId);
@@ -101,7 +100,6 @@ public class AccountService {
 
     public List<AccountDto> getAccounts(String token, UserAuthentication userAuthentication, String email) {
         String customerId = authenticationClient.getCustomerIdByEmail(token, email);
-        System.out.println("customerId="+ customerId);
         return getAccounts(customerId);
     }
 }

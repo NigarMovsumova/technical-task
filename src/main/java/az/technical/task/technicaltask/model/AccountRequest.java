@@ -17,7 +17,6 @@ public class AccountRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AccountFilter {
-        // private String customerId;
         private String accountId;
         private String currency;
         private BigDecimal minAmount;

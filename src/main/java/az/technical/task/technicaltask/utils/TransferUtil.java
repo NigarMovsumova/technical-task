@@ -15,17 +15,16 @@ public class TransferUtil {
                                    AccountEntity senderAccountEntity,
                                    AccountEntity receiverAccountEntity,
                                    String customerId) {
-        System.out.println(customerId + " " + transferDto.getCustomerId());
-        if (!customerId.equals(senderAccountEntity.getCustomerId())) {
+        if (!customerId.equals(transferDto.getCustomerId())) {
             throw new NoSuchAccountException("Customer can only pay from own accounts");
         }
 
         if (transferDto.getSenderAccountId().equals(transferDto.getReceiverAccountId())) {
-            throw new RuntimeException("Transfer can not be made to the same account");
+            throw new WrongPaymentChoiceException("Transfer can not be made to the same account");
         }
 
         if (transferDto.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("Transfer should be more than 0");
+            throw new WrongPaymentChoiceException("Transfer should be more than 0");
         }
 
         if (senderAccountEntity.getAmount().compareTo(transferDto.getAmount()) < 0) {

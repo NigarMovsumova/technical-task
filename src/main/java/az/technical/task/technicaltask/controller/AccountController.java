@@ -7,6 +7,7 @@ import az.technical.task.technicaltask.service.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,30 +21,34 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @CrossOrigin
-@AllArgsConstructor
 @RestController
 @RequestMapping("/accounts")
 @Api("Account Controller")
 public class AccountController {
+
     private final AccountService service;
 
-    @GetMapping("/by-customer")
+    public AccountController(AccountService service) {
+        this.service = service;
+    }
+
     @ApiOperation("get all accounts list by customer id")
+    @GetMapping("/by-customer")
     public List<AccountDto> getAccounts(@RequestHeader("X-Auth-Token") String token,
                                         UserAuthentication userAuthentication) {
         return service.getAccounts(userAuthentication.getPrincipal());
     }
 
-    @GetMapping("/{accountId}")
     @ApiOperation("get account information by accountId")
+    @GetMapping("/{accountId}")
     public AccountDto getAccount(@RequestHeader("X-Auth-Token") String token,
                                  UserAuthentication userAuthentication,
                                  @PathVariable(name = "accountId") String accountId) {
         return service.getAccount(userAuthentication.getPrincipal(), accountId);
     }
 
-    @PostMapping("/filter")
     @ApiOperation("filter accounts by different parameters")
+    @PostMapping("/filter")
     public List<AccountDto> getAccounts(
             @RequestHeader("X-Auth-Token") String token,
             @RequestBody AccountRequest accountRequest,
@@ -51,16 +56,16 @@ public class AccountController {
         return service.getAccounts(accountRequest, userAuthentication.getPrincipal());
     }
 
-    @PostMapping("/new")
     @ApiOperation("create a new account")
+    @PostMapping("/new")
     public AccountDto createAccount(
             @RequestHeader("X-Auth-Token") String token,
             UserAuthentication userAuthentication) {
         return service.createAccount(userAuthentication.getPrincipal());
     }
 
-    @PostMapping("/activate")
     @ApiOperation("activate a created account")
+    @PostMapping("/activate")
     public void activateAccount(
             @RequestHeader("X-Auth-Token") String token,
             UserAuthentication userAuthentication,
@@ -68,18 +73,19 @@ public class AccountController {
         service.activateAccount(userAuthentication, accountId);
     }
 
-    @DeleteMapping
     @ApiOperation("delete an existing account")
+    @DeleteMapping
     public void deleteAccount(@RequestHeader("X-Auth-Token") String token,
                               UserAuthentication userAuthentication,
                               String accountId) {
         service.deleteAccount(userAuthentication.getPrincipal(), accountId);
     }
 
-    @GetMapping("/by/email")
+    @ApiOperation("get accounts by email")
+    @GetMapping("/by/email/{email}")
     public List<AccountDto> getAccountsByEmail(@RequestHeader("X-Auth-Token") String token,
                                                UserAuthentication userAuthentication,
-                                               String email){
+                                               @PathVariable(name = "email") String email){
        return service.getAccounts(token, userAuthentication, email);
     }
 }
