@@ -27,18 +27,24 @@ public class TransferController {
 
     @GetMapping("/own")
     @ApiOperation("get all own transfers to any accounts")
-    public List<TransferDto> getOwnTransfers(@RequestHeader("X-Auth-Token") String token,
+    public List<TransferDto> getAllOwnTransfers(@RequestHeader("X-Auth-Token") String token,
                                              UserAuthentication userAuthentication) {
-       return null;
-        // return transferService.getOwnTransfers(userAuthentication.getDetails().getCustomerId());
+
+        return transferService.getAllOwnTransfers(userAuthentication.getPrincipal());
     }
 
     @GetMapping("/sent")
-    @ApiOperation("get sent transfers")
-    public List<TransferDto> getSentTransfers(@RequestHeader("X-Auth-Token") String token,
-                                             UserAuthentication userAuthentication){
-        return null;
-        //return transferService.getSentTransfers(userAuthentication.getDetails().getCustomerId());
+    @ApiOperation("get own sent transfers")
+    public List<TransferDto> getSentOwnTransfers(@RequestHeader("X-Auth-Token") String token,
+                                              UserAuthentication userAuthentication) {
+        return transferService.getSentOwnTransfers(userAuthentication.getPrincipal());
+    }
+
+    @GetMapping("/received")
+    @ApiOperation("get own received payments")
+    public List<TransferDto> getReceivedOwnPayments(@RequestHeader("X-Auth-Token") String token,
+                                                    UserAuthentication userAuthentication){
+        return transferService.getReceivedOwnTransfers(userAuthentication.getPrincipal());
     }
 
     @PostMapping

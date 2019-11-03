@@ -75,15 +75,15 @@ public class AccountService {
         }
         AccountEntity accountEntity = accountRepository
                 .findByAccountId(accountId)
-                .orElseThrow(()-> new NoSuchAccountException("Account does not exist"));
-        if (!accountEntity.getStatus().equals("ACTIVE")){
+                .orElseThrow(() -> new NoSuchAccountException("Account does not exist"));
+        if (!accountEntity.getStatus().equals("ACTIVE")) {
             accountEntity.setStatus("ACTIVE");
             accountRepository.save(accountEntity);
         }
     }
 
     public void deleteAccount(String customerId, String accountId) {
-        AccountEntity accountEntity= accountRepository
+        AccountEntity accountEntity = accountRepository
                 .findByCustomerIdAndAccountId(customerId, accountId)
                 .orElseThrow(() -> new NoSuchAccountException("User does not have such an account"));
         accountRepository.delete(accountEntity);

@@ -20,7 +20,6 @@ public class AccountMapper {
     }
 
 
-
     public List<AccountDto> mapEntityListToDtoList(List<AccountEntity> accountEntities) {
         return accountEntities.stream()
                 .map(this::mapEntityToDto)

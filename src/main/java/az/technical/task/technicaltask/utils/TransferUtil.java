@@ -4,8 +4,6 @@ import az.technical.task.technicaltask.exceptions.NoSuchAccountException;
 import az.technical.task.technicaltask.exceptions.WrongPaymentChoiceException;
 import az.technical.task.technicaltask.model.dto.TransferDto;
 import az.technical.task.technicaltask.model.entity.AccountEntity;
-import az.technical.task.technicaltask.repository.AccountRepository;
-import az.technical.task.technicaltask.security.UserAuthentication;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -16,9 +14,9 @@ public class TransferUtil {
     public boolean isTransferValid(TransferDto transferDto,
                                    AccountEntity senderAccountEntity,
                                    AccountEntity receiverAccountEntity,
-                                   String customerId){
-        System.out.println(customerId+" "+ transferDto.getCustomerId());
-        if(!customerId.equals(senderAccountEntity.getCustomerId())){
+                                   String customerId) {
+        System.out.println(customerId + " " + transferDto.getCustomerId());
+        if (!customerId.equals(senderAccountEntity.getCustomerId())) {
             throw new NoSuchAccountException("Customer can only pay from own accounts");
         }
 

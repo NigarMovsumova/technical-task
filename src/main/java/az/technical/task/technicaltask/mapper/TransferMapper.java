@@ -16,6 +16,7 @@ public class TransferMapper {
                 .senderAccountId(transferEntity.getSenderAccountId())
                 .receiverAccountId(transferEntity.getReceiverAccountId())
                 .customerId(transferEntity.getCustomerId())
+                .increased(transferEntity.getIncreased())
                 .amount(transferEntity.getAmount())
                 .category(transferEntity.getCategory())
                 .currency(transferEntity.getCurrency())

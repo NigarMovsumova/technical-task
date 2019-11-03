@@ -10,4 +10,6 @@ import java.util.List;
 public interface TransferRepository extends JpaRepository<TransferEntity, Integer> {
 
     List<TransferEntity> findAllByCustomerId(String customerId);
+
+    List<TransferEntity> findAllByCustomerIdAndIncreased(String customerId, boolean increased);
 }

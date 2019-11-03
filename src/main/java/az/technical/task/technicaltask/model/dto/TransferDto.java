@@ -16,6 +16,7 @@ public class TransferDto {
     private String senderAccountId;
     private String receiverAccountId;
     private BigDecimal amount;
+    private boolean increased;
     private String currency;
     private String category;
     private String description;

@@ -12,8 +12,6 @@ import az.technical.task.technicaltask.utils.TransferUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class TransferService {
@@ -34,17 +32,17 @@ public class TransferService {
 
     public void makeTransfer(UserAuthentication userAuthentication, TransferDto transferDto) {
 
-        TransferEntity sentTransferEntity= transferMapper.mapDtoToEntity(transferDto);
-        TransferEntity receivedTransferEntity= transferMapper.mapDtoToEntity(transferDto);
+        TransferEntity sentTransferEntity = transferMapper.mapDtoToEntity(transferDto);
+        TransferEntity receivedTransferEntity = transferMapper.mapDtoToEntity(transferDto);
 
-        AccountEntity senderAccountEntity= accountRepository
+        AccountEntity senderAccountEntity = accountRepository
                 .findByAccountId(transferDto.getSenderAccountId())
-                .orElseThrow(()-> new NoSuchAccountException("Customer does not have such an account"));
-        AccountEntity receiverAccountEntity= accountRepository
+                .orElseThrow(() -> new NoSuchAccountException("Customer does not have such an account"));
+        AccountEntity receiverAccountEntity = accountRepository
                 .findByAccountId(transferDto.getReceiverAccountId())
-                .orElseThrow(()-> new NoSuchAccountException("Customer does not have such an account"));
+                .orElseThrow(() -> new NoSuchAccountException("Customer does not have such an account"));
 
-        if(transferUtil.isTransferValid(transferDto, senderAccountEntity, receiverAccountEntity, userAuthentication.getPrincipal())){
+        if (transferUtil.isTransferValid(transferDto, senderAccountEntity, receiverAccountEntity, userAuthentication.getPrincipal())) {
             sentTransferEntity.setIncreased(false);
             sentTransferEntity.setCurrency("AZN");
             transferRepository.save(sentTransferEntity);
@@ -58,5 +56,20 @@ public class TransferService {
             accountRepository.save(senderAccountEntity);
             accountRepository.save(receiverAccountEntity);
         }
+    }
+
+    public List<TransferDto> getAllOwnTransfers(String customerId) {
+        List<TransferEntity> ownTransfersList= transferRepository.findAllByCustomerId(customerId);
+        return transferMapper.mapEntityListToDtoList(ownTransfersList);
+    }
+
+    public List<TransferDto> getSentOwnTransfers(String customerId) {
+        return transferMapper.mapEntityListToDtoList(transferRepository
+                .findAllByCustomerIdAndIncreased(customerId, false));
+    }
+
+    public List<TransferDto> getReceivedOwnTransfers(String customerId) {
+        return transferMapper.mapEntityListToDtoList( transferRepository
+                .findAllByCustomerIdAndIncreased(customerId, true));
     }
 }
