@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - logicalFilePath: liquibase/1.0/changelog-1.0.0.yml
+  - changeSet:
+      id: created accounts table
+      author: Nigar Movsumova
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: double precission
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(10)
+              - column:
+                  name: account_id
+                  type: varchar(30)
+              - column:
+                  name: status
+                  type: varchar(15)
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp

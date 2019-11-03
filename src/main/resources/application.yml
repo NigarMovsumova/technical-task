@@ -14,7 +14,7 @@ spring:
       hibernate.temp.use_jdbc_metadata_defaults: false
     hibernate:
       ddl-auto: update
+  liquibase:
+    change-log: classpath:liquibase/changelog-master.yml
 swagger:
   enabled: true
-
-
