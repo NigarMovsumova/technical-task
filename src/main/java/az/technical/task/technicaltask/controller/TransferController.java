@@ -1,12 +1,10 @@
 package az.technical.task.technicaltask.controller;
 
 import az.technical.task.technicaltask.model.dto.TransferDto;
-import az.technical.task.technicaltask.security.UserAuthentication;
+import az.technical.task.technicaltask.security.CustomerAuthentication;
 import az.technical.task.technicaltask.service.TransferService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,31 +30,31 @@ public class TransferController {
     @ApiOperation("get all own transfers to any accounts")
     @GetMapping("/own")
     public List<TransferDto> getAllOwnTransfers(@RequestHeader("X-Auth-Token") String token,
-                                             UserAuthentication userAuthentication) {
+                                             CustomerAuthentication customerAuthentication) {
 
-        return transferService.getAllOwnTransfers(userAuthentication.getPrincipal());
+        return transferService.getAllOwnTransfers(customerAuthentication.getPrincipal());
     }
 
     @GetMapping("/sent")
     @ApiOperation("get own sent transfers")
     public List<TransferDto> getSentOwnTransfers(@RequestHeader("X-Auth-Token") String token,
-                                              UserAuthentication userAuthentication) {
-        return transferService.getSentOwnTransfers(userAuthentication.getPrincipal());
+                                              CustomerAuthentication customerAuthentication) {
+        return transferService.getSentOwnTransfers(customerAuthentication.getPrincipal());
     }
 
     @GetMapping("/received")
     @ApiOperation("get own received payments")
     public List<TransferDto> getReceivedOwnPayments(@RequestHeader("X-Auth-Token") String token,
-                                                    UserAuthentication userAuthentication){
-        return transferService.getReceivedOwnTransfers(userAuthentication.getPrincipal());
+                                                    CustomerAuthentication customerAuthentication){
+        return transferService.getReceivedOwnTransfers(customerAuthentication.getPrincipal());
     }
 
     @PostMapping
     @ApiOperation("make a transfer to own/other accounts")
     public void makeTransfer(@RequestHeader("X-Auth-Token") String token,
                              @RequestBody TransferDto transferDto,
-                             UserAuthentication userAuthentication) {
-        transferService.makeTransfer(userAuthentication, transferDto);
+                             CustomerAuthentication customerAuthentication) {
+        transferService.makeTransfer(customerAuthentication, transferDto);
     }
 
 }

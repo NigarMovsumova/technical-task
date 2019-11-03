@@ -5,16 +5,16 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public class UserAuthentication implements Authentication {
+public class CustomerAuthentication implements Authentication {
 
     private String customerId;
-    private UserInfo userInfo;
+    private CustomerInfo customerInfo;
     private boolean authenticated;
     private String role;
 
-    public UserAuthentication(String customerId, UserInfo userInfo, boolean authenticated, String role) {
+    public CustomerAuthentication(String customerId, CustomerInfo customerInfo, boolean authenticated, String role) {
         this.customerId = customerId;
-        this.userInfo = userInfo;
+        this.customerInfo = customerInfo;
         this.authenticated = authenticated;
         this.role = role;
     }
@@ -34,8 +34,8 @@ public class UserAuthentication implements Authentication {
     }
 
     @Override
-    public UserInfo getDetails() {
-        return userInfo;
+    public CustomerInfo getDetails() {
+        return customerInfo;
     }
 
     @Override

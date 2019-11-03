@@ -7,7 +7,7 @@ import az.technical.task.technicaltask.model.entity.AccountEntity;
 import az.technical.task.technicaltask.model.entity.TransferEntity;
 import az.technical.task.technicaltask.repository.AccountRepository;
 import az.technical.task.technicaltask.repository.TransferRepository;
-import az.technical.task.technicaltask.security.UserAuthentication;
+import az.technical.task.technicaltask.security.CustomerAuthentication;
 import az.technical.task.technicaltask.utils.TransferUtil;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class TransferService {
     }
 
 
-    public void makeTransfer(UserAuthentication userAuthentication, TransferDto transferDto) {
+    public void makeTransfer(CustomerAuthentication customerAuthentication, TransferDto transferDto) {
 
         TransferEntity sentTransferEntity = transferMapper.mapDtoToEntity(transferDto);
         TransferEntity receivedTransferEntity = transferMapper.mapDtoToEntity(transferDto);
@@ -42,7 +42,7 @@ public class TransferService {
                 .findByAccountId(transferDto.getReceiverAccountId())
                 .orElseThrow(() -> new NoSuchAccountException("Customer does not have such an account"));
 
-        if (transferUtil.isTransferValid(transferDto, senderAccountEntity, receiverAccountEntity, userAuthentication.getPrincipal())) {
+        if (transferUtil.isTransferValid(transferDto, senderAccountEntity, receiverAccountEntity, customerAuthentication.getPrincipal())) {
             sentTransferEntity.setIncreased(false);
             sentTransferEntity.setCurrency("AZN");
             transferRepository.save(sentTransferEntity);

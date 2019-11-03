@@ -2,7 +2,8 @@ package az.technical.task.technicaltask.filter;
 
 import az.technical.task.technicaltask.client.MsAuthenticationClient;
 import az.technical.task.technicaltask.model.client.auth.UserInfo;
-import az.technical.task.technicaltask.security.UserAuthentication;
+import az.technical.task.technicaltask.security.CustomerInfo;
+import az.technical.task.technicaltask.security.CustomerAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -30,15 +31,15 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 if (userInfo == null) {
                     throw new RuntimeException("User info is not valid");
                 } else {
-                    UserAuthentication userAuthentication = new UserAuthentication(userInfo.getCustomerId(),
-                            az.technical.task.technicaltask.security.UserInfo
+                    CustomerAuthentication customerAuthentication = new CustomerAuthentication(userInfo.getCustomerId(),
+                            CustomerInfo
                                     .builder()
                                     .customerId(userInfo.getCustomerId())
                                     .email(userInfo.getEmail())
                                     .build(),
                             true,
                             userInfo.getRole());
-                    SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+                    SecurityContextHolder.getContext().setAuthentication(customerAuthentication);
                 }
             }
         } finally {

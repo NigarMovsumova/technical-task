@@ -11,8 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface AccountRepository extends CrudRepository<AccountEntity, Integer>,
-        JpaSpecificationExecutor<AccountEntity> {
+public interface AccountRepository extends CrudRepository<AccountEntity, Integer>{
 
     Optional<AccountEntity> findByAccountId(String accountId);
 
