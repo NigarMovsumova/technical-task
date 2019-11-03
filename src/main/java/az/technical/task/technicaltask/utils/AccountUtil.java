@@ -23,8 +23,6 @@ public class AccountUtil {
         if (accountRepository.getAllAccountIds().contains(sb.toString())) {
             generateAccountId();
         }
-
         return sb.toString();
     }
-
 }

@@ -1,5 +1,7 @@
 package az.technical.task.technicaltask.service;
 
+import az.technical.task.technicaltask.controller.AccountController;
+import az.technical.task.technicaltask.controller.TransferController;
 import az.technical.task.technicaltask.exceptions.NoSuchAccountException;
 import az.technical.task.technicaltask.mapper.TransferMapper;
 import az.technical.task.technicaltask.model.dto.TransferDto;
@@ -9,6 +11,8 @@ import az.technical.task.technicaltask.repository.AccountRepository;
 import az.technical.task.technicaltask.repository.TransferRepository;
 import az.technical.task.technicaltask.security.CustomerAuthentication;
 import az.technical.task.technicaltask.utils.TransferUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +23,7 @@ public class TransferService {
     private final AccountRepository accountRepository;
     private final TransferMapper transferMapper;
     private final TransferUtil transferUtil;
+    private static final Logger logger = LoggerFactory.getLogger(TransferController.class);
 
     public TransferService(TransferRepository transferRepository,
                            AccountRepository accountRepository, TransferMapper transferMapper,
@@ -30,8 +35,9 @@ public class TransferService {
     }
 
 
-    public void makeTransfer(CustomerAuthentication customerAuthentication, TransferDto transferDto) {
-
+    public void makeTransfer(CustomerAuthentication customerAuthentication,
+                             TransferDto transferDto) {
+        logger.info("ActionLog.makeTransfer.start");
         TransferEntity sentTransferEntity = transferMapper.mapDtoToEntity(transferDto);
         TransferEntity receivedTransferEntity = transferMapper.mapDtoToEntity(transferDto);
 
@@ -56,19 +62,23 @@ public class TransferService {
             accountRepository.save(senderAccountEntity);
             accountRepository.save(receiverAccountEntity);
         }
+        logger.info("ActionLog.makeTransfer.end");
     }
 
     public List<TransferDto> getAllOwnTransfers(String customerId) {
+        logger.info("ActionLog.getAllOwnTransfers.start");
         List<TransferEntity> ownTransfersList= transferRepository.findAllByCustomerId(customerId);
         return transferMapper.mapEntityListToDtoList(ownTransfersList);
     }
 
     public List<TransferDto> getSentOwnTransfers(String customerId) {
+        logger.info("ActionLog.getSentOwnTransfers.start");
         return transferMapper.mapEntityListToDtoList(transferRepository
                 .findAllByCustomerIdAndIncreased(customerId, false));
     }
 
     public List<TransferDto> getReceivedOwnTransfers(String customerId) {
+        logger.info("ActionLog.getReceivedOwnTransfers.start");
         return transferMapper.mapEntityListToDtoList( transferRepository
                 .findAllByCustomerIdAndIncreased(customerId, true));
     }
