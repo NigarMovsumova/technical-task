@@ -32,11 +32,11 @@ public class TransferEntity {
     @Column(name = "customer_id")
     private String customerId;
 
-    @Column(name = "account_id")
-    private String accountId;
+    @Column(name = "sender_account_id")
+    private String senderAccountId;
 
-    @Column(name = "topped_up_account_id")
-    private String toppedUpAccountId;
+    @Column(name = "receiver_account_id")
+    private String receiverAccountId;
 
     @Column(name = "created_at")
     @CreationTimestamp

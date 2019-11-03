@@ -1,5 +1,6 @@
 package az.technical.task.technicaltask.service;
 
+import az.technical.task.technicaltask.exceptions.NoSuchAccountException;
 import az.technical.task.technicaltask.mapper.TransferMapper;
 import az.technical.task.technicaltask.model.dto.TransferDto;
 import az.technical.task.technicaltask.model.entity.AccountEntity;
@@ -30,39 +31,32 @@ public class TransferService {
         this.transferUtil = transferUtil;
     }
 
-    public List<TransferDto> getOwnTransfers(String customerId) {
-        List<TransferEntity> transferEntityList = transferRepository.findAllByCustomerId(customerId);
-        return transferMapper.mapEntityListToDtoList(transferEntityList);
-    }
 
     public void makeTransfer(UserAuthentication userAuthentication, TransferDto transferDto) {
 
-        //TODO transfer has to be saved both for sender and receiver
-        if (transferUtil.isTransferValid(transferDto)){
-            TransferEntity transferEntity = TransferEntity
-                    .builder()
-                    .accountId(
-                            transferDto.getAccountId())
-                    .amount(transferDto.getAmount())
-                    .category(transferDto.getCategory())
-                    .currency("AZN")
-                    .toppedUpAccountId(transferDto.getToppedUpAccountId())
-                    .customerId(userAuthentication.getPrincipal())
-                    .description(transferDto.getDescription())
-                    .increased(false)
-                    .build();
-            transferRepository.save(transferEntity);
+        TransferEntity sentTransferEntity= transferMapper.mapDtoToEntity(transferDto);
+        TransferEntity receivedTransferEntity= transferMapper.mapDtoToEntity(transferDto);
+
+        AccountEntity senderAccountEntity= accountRepository
+                .findByAccountId(transferDto.getSenderAccountId())
+                .orElseThrow(()-> new NoSuchAccountException("Customer does not have such an account"));
+        AccountEntity receiverAccountEntity= accountRepository
+                .findByAccountId(transferDto.getReceiverAccountId())
+                .orElseThrow(()-> new NoSuchAccountException("Customer does not have such an account"));
+
+        if(transferUtil.isTransferValid(transferDto, senderAccountEntity, receiverAccountEntity, userAuthentication.getPrincipal())){
+            sentTransferEntity.setIncreased(false);
+            sentTransferEntity.setCurrency("AZN");
+            transferRepository.save(sentTransferEntity);
+
+            receivedTransferEntity.setIncreased(true);
+            receivedTransferEntity.setCurrency("AZN");
+            receivedTransferEntity.setCustomerId(receiverAccountEntity.getCustomerId());
+
+            senderAccountEntity.setAmount(senderAccountEntity.getAmount().subtract(transferDto.getAmount()));
+            receiverAccountEntity.setAmount(receiverAccountEntity.getAmount().add(transferDto.getAmount()));
+            accountRepository.save(senderAccountEntity);
+            accountRepository.save(receiverAccountEntity);
         }
-    }
-
-    public List<TransferDto> getSentTransfers(String customerId) {
-        List<AccountEntity> accountEntityList= accountRepository.findAllByCustomerId(customerId);
-        Set<String> accountIds= accountEntityList
-                .stream()
-                .map(AccountEntity::getAccountId)
-                .collect(Collectors.toSet());
-        System.out.println(accountIds.toString()  );
-
-        return null;
     }
 }

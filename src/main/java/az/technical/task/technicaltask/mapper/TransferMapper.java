@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 @Component
 public class TransferMapper {
     public TransferDto mapEntityToDto(TransferEntity transferEntity) {
+        System.out.println(transferEntity.toString());
         return TransferDto
                 .builder()
-                .accountId(transferEntity.getAccountId())
+                .senderAccountId(transferEntity.getSenderAccountId())
+                .receiverAccountId(transferEntity.getReceiverAccountId())
                 .customerId(transferEntity.getCustomerId())
                 .amount(transferEntity.getAmount())
                 .category(transferEntity.getCategory())
@@ -25,10 +27,11 @@ public class TransferMapper {
     public TransferEntity mapDtoToEntity(TransferDto transferDto) {
         return TransferEntity
                 .builder()
-                .toppedUpAccountId(transferDto.getToppedUpAccountId())
-                .accountId(transferDto.getAccountId())
+                .senderAccountId(transferDto.getSenderAccountId())
+                .receiverAccountId(transferDto.getReceiverAccountId())
                 .customerId(transferDto.getCustomerId())
                 .amount(transferDto.getAmount())
+                .currency(transferDto.getCurrency())
                 .category(transferDto.getCategory())
                 .description(transferDto.getDescription())
                 .build();

@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransferDto {
     private String customerId;
-    private String toppedUpAccountId;
-    private String accountId;
+    private String senderAccountId;
+    private String receiverAccountId;
     private BigDecimal amount;
     private String currency;
     private String category;

@@ -4,6 +4,7 @@ import az.technical.task.technicaltask.model.dto.TransferDto;
 import az.technical.task.technicaltask.security.UserAuthentication;
 import az.technical.task.technicaltask.service.TransferService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,19 +25,24 @@ public class TransferController {
 
     private TransferService transferService;
 
-    @GetMapping("/all")
+    @GetMapping("/own")
+    @ApiOperation("get all own transfers to any accounts")
     public List<TransferDto> getOwnTransfers(@RequestHeader("X-Auth-Token") String token,
                                              UserAuthentication userAuthentication) {
-        return transferService.getOwnTransfers(userAuthentication.getDetails().getCustomerId());
+       return null;
+        // return transferService.getOwnTransfers(userAuthentication.getDetails().getCustomerId());
     }
 
-    @GetMapping("/own")
+    @GetMapping("/sent")
+    @ApiOperation("get sent transfers")
     public List<TransferDto> getSentTransfers(@RequestHeader("X-Auth-Token") String token,
                                              UserAuthentication userAuthentication){
-        return transferService.getSentTransfers(userAuthentication.getDetails().getCustomerId());
+        return null;
+        //return transferService.getSentTransfers(userAuthentication.getDetails().getCustomerId());
     }
 
     @PostMapping
+    @ApiOperation("make a transfer to own/other accounts")
     public void makeTransfer(@RequestHeader("X-Auth-Token") String token,
                              @RequestBody TransferDto transferDto,
                              UserAuthentication userAuthentication) {
