@@ -1,5 +1,6 @@
 package az.technical.task.technicaltask.service;
 
+import az.technical.task.technicaltask.client.MsAuthenticationClient;
 import az.technical.task.technicaltask.exceptions.NoSuchAccountException;
 import az.technical.task.technicaltask.mapper.AccountMapper;
 import az.technical.task.technicaltask.model.AccountRequest;
@@ -18,11 +19,13 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final MsAuthenticationClient authenticationClient;
 
     public AccountService(AccountRepository accountRepository,
-                          AccountMapper accountMapper) {
+                          AccountMapper accountMapper, MsAuthenticationClient authenticationClient) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
+        this.authenticationClient = authenticationClient;
     }
 
     public String generateAccountId() {
@@ -94,5 +97,11 @@ public class AccountService {
                 .findByCustomerIdAndAccountId(customerId, accountId)
                 .orElseThrow(() -> new NoSuchAccountException("User does not have such an account"));
         return accountMapper.mapEntityToDto(accountEntity);
+    }
+
+    public List<AccountDto> getAccounts(String token, UserAuthentication userAuthentication, String email) {
+        String customerId = authenticationClient.getCustomerIdByEmail(token, email);
+        System.out.println("customerId="+ customerId);
+        return getAccounts(customerId);
     }
 }

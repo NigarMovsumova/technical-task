@@ -25,7 +25,6 @@ import java.util.List;
 @RequestMapping("/accounts")
 @Api("Account Controller")
 public class AccountController {
-
     private final AccountService service;
 
     @GetMapping("/by-customer")
@@ -75,6 +74,13 @@ public class AccountController {
                               UserAuthentication userAuthentication,
                               String accountId) {
         service.deleteAccount(userAuthentication.getPrincipal(), accountId);
+    }
+
+    @GetMapping("/by/email")
+    public List<AccountDto> getAccountsByEmail(@RequestHeader("X-Auth-Token") String token,
+                                               UserAuthentication userAuthentication,
+                                               String email){
+       return service.getAccounts(token, userAuthentication, email);
     }
 }
 
